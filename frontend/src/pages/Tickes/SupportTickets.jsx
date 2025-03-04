@@ -1,60 +1,3 @@
-// import { useState } from "react";
-// import { PlusCircle, Mail, User, Clock } from "lucide-react";
-
-// const SupportTickets = () => {
-//   const [tickets, setTickets] = useState([
-//     { id: 1, title: "Login Issue", assignedTo: "John Doe", status: "Open" },
-//     { id: 2, title: "Payment Failure", assignedTo: "Jane Smith", status: "In Progress" },
-//   ]);
-  
-//   const addTicket = () => {
-//     const newTicket = {
-//       id: tickets.length + 1,
-//       title: "New Support Request",
-//       assignedTo: "Unassigned",
-//       status: "Open",
-//     };
-//     setTickets([...tickets, newTicket]);
-//   };
-
-//   return (
-//     <div className="p-6 bg-gray-100 min-h-screen">
-//       <div className="flex justify-between items-center mb-6">
-//         <h2 className="text-2xl font-bold">Support & Ticketing</h2>
-//         <button
-//           className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
-//           onClick={addTicket}
-//         >
-//           <PlusCircle size={20} /> Create Ticket
-//         </button>
-//       </div>
-      
-//       <div className="bg-white p-4 rounded-lg shadow-md">
-//         <table className="w-full border-collapse">
-//           <thead>
-//             <tr className="bg-gray-200">
-//               <th className="p-3 text-left">Ticket</th>
-//               <th className="p-3 text-left">Assigned To</th>
-//               <th className="p-3 text-left">Status</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {tickets.map((ticket) => (
-//               <tr key={ticket.id} className="border-t">
-//                 <td className="p-3 flex items-center gap-2"><Mail size={18} /> {ticket.title}</td>
-//                 <td className="p-3 flex items-center gap-2"><User size={18} /> {ticket.assignedTo}</td>
-//                 <td className="p-3 flex items-center gap-2"><Clock size={18} /> {ticket.status}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SupportTickets;
-
 
 
 
@@ -108,7 +51,7 @@ const SupportTickets = () => {
 
   const sendEmailNotification = async (email, name) => {
     try {
-      await axios.post("http://localhost:5000/send-email", { email, name });
+      await axios.post("https://smartcrmbackend.onrender.com/send-email", { email, name });
       alert(`Email sent to ${name} (${email})`);
     } catch (error) {
       console.error("Email sending failed", error);

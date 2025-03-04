@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api", // Change this for production
+  baseURL: "https://smartcrmbackend.onrender.com/api", // Change this for production
 });
 
 // Automatically add token to requests
