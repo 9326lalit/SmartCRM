@@ -58,6 +58,7 @@ const Sidebar = () => {
               <Settings size={20} /> Setting
             </NavLink>
           </li>
+          <h3>Lalit Khairnar</h3>
         </ul>
       </nav>
     </aside>
