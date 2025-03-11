@@ -39,7 +39,6 @@ const Sidebar = () => {
           </li>
           <li>
             <NavLink to="/team" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
-              {/* <UsersCog size={20} />  */}
               Team Management
             </NavLink>
           </li>
@@ -58,9 +57,15 @@ const Sidebar = () => {
               <Settings size={20} /> Setting
             </NavLink>
           </li>
-          <h3>Lalit Khairnar</h3>
         </ul>
       </nav>
+      
+      <hr className="border-gray-700 my-4" />
+
+      {/* Styled Name Section */}
+      <div className="text-center mt-auto">
+        <p className="text-lg font-semibold opacity-80">Lalit Khairnar</p>
+      </div>
     </aside>
   );
 };
