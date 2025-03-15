@@ -3,7 +3,7 @@ import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import CRMLineChart from "../components/charts/LineChart";
 import CRMPieChart from "../components/charts/PieChart";
-import axios from "../api/axios";
+import axios from "axios"; // Directly importing axios for API requests
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
@@ -22,7 +22,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get("/dashboard-stats");
+        const response = await axios.get("http://localhost:5000/api/stats/stats");
         setDashboardData(response.data);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
@@ -61,10 +61,10 @@ const Dashboard = () => {
   return (
     <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* KPI Cards */}
-      {[
-        { title: "Total Customers", value: dashboardData.customers, change: `+${dashboardData.growth}% from last month`, color: "text-green-600" },
-        { title: "Total Leads", value: dashboardData.leads, change: "+5 new leads today", color: "text-blue-600" },
-        { title: "Revenue", value: `$${dashboardData.revenue}`, change: "+12% from last month", color: "text-green-600" }
+      {[ 
+        { title: "Total Customers", value: dashboardData.totalCustomers, change: `+${dashboardData.totalCustomers}% from last month`, color: "text-green-600" },
+        { title: "Total Leads", value: dashboardData.totalLeads, change: "new leads ", color: "text-blue-600" },
+        { title: "Revenue", value: `$${dashboardData.totalRevenue}`, change: "+12% from last month", color: "text-green-600" }
       ].map((item, index) => (
         <Card key={index} className="p-4 bg-white shadow-lg rounded-xl">
           <h3 className="text-lg font-semibold">{item.title}</h3>

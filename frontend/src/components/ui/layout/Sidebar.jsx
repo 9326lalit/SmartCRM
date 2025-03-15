@@ -32,11 +32,11 @@ const Sidebar = () => {
               <CheckSquare size={20} /> Tasks & Reminders
             </NavLink>
           </li>
-          <li>
+          {/* <li>
             <NavLink to="/invoices" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <FileText size={20} /> Invoices & Payments
             </NavLink>
-          </li>
+          </li> */}
           <li>
             <NavLink to="/team" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               Team Management
@@ -47,16 +47,16 @@ const Sidebar = () => {
               <Ticket size={20} /> Support & Tickets
             </NavLink>
           </li>
-          <li>
+          {/* <li>
             <NavLink to="/analytics" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <BarChart3 size={20} /> Analytics & Reports
             </NavLink>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             <NavLink to="/settings" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <Settings size={20} /> Setting
             </NavLink>
-          </li>
+          </li> */}
         </ul>
       </nav>
       

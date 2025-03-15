@@ -1,37 +1,11 @@
-// import { useState } from "react";
-
-// const Team = () => {
-//   const [team, setTeam] = useState([
-//     { id: 1, name: "Alice Johnson", role: "Sales Manager" },
-//     { id: 2, name: "Bob Smith", role: "Support Lead" }
-//   ]);
-
-//   return (
-//     <div className="p-6 bg-white rounded-lg shadow-md">
-//       <h2 className="text-xl font-bold mb-4">👥 Team Management</h2>
-//       <ul>
-//         {team.map(member => (
-//           <li key={member.id} className="flex justify-between items-center p-2 border-b">
-//             <span>{member.name} - {member.role}</span>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default Team;
-
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { PlusCircle, Trash2, Edit3, Save, Filter, Moon, Sun } from "lucide-react";
 
-const Team = () => {
-  const [team, setTeam] = useState([
-    { id: 1, name: "Alice Johnson", role: "Sales Manager", joinDate: "2023-05-10", paymentStatus: "Paid", tasksCompleted: 20 },
-    { id: 2, name: "Bob Smith", role: "Support Lead", joinDate: "2022-11-18", paymentStatus: "Unpaid", tasksCompleted: 15 }
-  ]);
+const API_URL = "http://localhost:5000/api/team"; // Update this with your backend URL
 
+const Team = () => {
+  const [team, setTeam] = useState([]);
   const [newMember, setNewMember] = useState({ name: "", role: "", joinDate: "", paymentStatus: "Unpaid", tasksCompleted: 0 });
   const [editingId, setEditingId] = useState(null);
   const [editedMember, setEditedMember] = useState({});
@@ -39,31 +13,52 @@ const Team = () => {
   const [sortBy, setSortBy] = useState("");
   const [darkMode, setDarkMode] = useState(false);
 
+  // Fetch team members from backend
+  useEffect(() => {
+    axios.get(API_URL)
+      .then(response => setTeam(response.data))
+      .catch(error => console.error("Error fetching team:", error));
+  }, []);
+
+  // Add a new member
   const addMember = () => {
-    if (newMember.name && newMember.role && newMember.joinDate) {
-      setTeam([...team, { id: Date.now(), ...newMember }]);
-      setNewMember({ name: "", role: "", joinDate: "", paymentStatus: "Unpaid", tasksCompleted: 0 });
-    }
+    if (!newMember.name || !newMember.role || !newMember.joinDate) return;
+    
+    axios.post(API_URL, newMember)
+      .then(response => {
+        setTeam([...team, response.data]); // Add new member to state
+        setNewMember({ name: "", role: "", joinDate: "", paymentStatus: "Unpaid", tasksCompleted: 0 });
+      })
+      .catch(error => console.error("Error adding member:", error));
   };
 
+  // Delete a member
   const removeMember = (id) => {
-    setTeam(team.filter(member => member.id !== id));
+    axios.delete(`${API_URL}/${id}`)
+      .then(() => setTeam(team.filter(member => member.id !== id)))
+      .catch(error => console.error("Error deleting member:", error));
   };
 
+  // Start editing a member
   const startEditing = (member) => {
     setEditingId(member.id);
     setEditedMember({ ...member });
   };
 
+  // Save edited member
   const saveEdit = () => {
-    setTeam(team.map(member => (member.id === editingId ? editedMember : member)));
-    setEditingId(null);
+    axios.put(`${API_URL}/${editingId}`, editedMember)
+      .then(response => {
+        setTeam(team.map(member => (member.id === editingId ? response.data : member)));
+        setEditingId(null);
+      })
+      .catch(error => console.error("Error updating member:", error));
   };
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  // Toggle dark mode
+  const toggleDarkMode = () => setDarkMode(!darkMode);
 
+  // Filter and sort team list
   const sortedFilteredTeam = team
     .filter(member => (filterPayment ? member.paymentStatus === filterPayment : true))
     .sort((a, b) => {
