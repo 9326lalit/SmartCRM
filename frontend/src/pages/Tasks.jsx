@@ -1,238 +1,136 @@
-// import { useEffect, useState } from "react";
-// import API from "../api/axios"; // Ensure your API instance is correctly configured
-// import { Toaster, toast } from "react-hot-toast";
-// import axios from "axios";
-
-// const statusColors = {
-//   pending: "bg-yellow-500",
-//   in_progress: "bg-blue-500",
-//   completed: "bg-green-500",
-// };
-
-// const Tasks = () => {
-//   const [tasks, setTasks] = useState([]);
-//   const [showModal, setShowModal] = useState(false);
-//   const [employees, setEmployees] = useState([]);
-//   const [newTask, setNewTask] = useState({ title: "sdfsdf", description: "sdfsdf", assignedTo: "j453h53r4b5435b345bb", dueDate: "3/20/1020" });
-
-//   useEffect(() => {
-//     fetchTasks();
-//     fetchEmployees();
-//   }, []);
-
-//   // ✅ Fetch all tasks safely
-//   const fetchTasks = async () => {
-//     try {
-//       const res = await API.get("/tasks/gettasks");
-//       setTasks(Array.isArray(res.data) ? res.data : []); // Ensure tasks is always an array
-//     } catch (err) {
-//       toast.error("Error fetching tasks");
-//       setTasks([]); // Prevent errors when mapping over tasks
-//     }
-//   };
-
-//   // ✅ Fetch employees safely
-//   const fetchEmployees = async () => {
-//     try {
-//       const res = await axios.get("http://localhost:5000/api/users/getemployees");
-//       setEmployees(Array.isArray(res.data) ? res.data : []);
-//     } catch (err) {
-//       toast.error("Error fetching employees");
-//       setEmployees([]);
-//     }
-//   };
-
-//   // ✅ Handle Task Submission
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       await API.post("/tasks/assigntask", newTask);
-//       toast.success("Task assigned successfully!");
-//       setShowModal(false);
-//       setNewTask({ title: "", description: "", assignedTo: "", dueDate: "" });
-//       fetchTasks(); // Refresh tasks
-//     } catch (err) {
-//       toast.error("Failed to assign task");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 p-6">
-//       <Toaster position="top-right" />
-//       <div className="max-w-5xl mx-auto">
-//         <div className="flex justify-between items-center mb-6">
-//           <h2 className="text-3xl font-bold text-gray-800">📌 Your Tasks</h2>
-//           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg" onClick={() => setShowModal(true)}>
-//             + Assign Task
-//           </button>
-//         </div>
-
-//         {tasks.length === 0 ? (
-//           <p className="text-gray-500 text-center">No tasks available</p>
-//         ) : (
-//           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-//             {tasks.map((task) => (
-//               <div key={task._id} className="bg-white shadow-lg rounded-lg p-5 border-l-4 border-gray-300">
-//                 <h3 className="text-xl font-semibold text-gray-700">{task.title}</h3>
-//                 <p className="text-gray-600 mt-1">{task.description}</p>
-//                 <p className="text-gray-500 text-sm mt-1">👤 Assigned to: {task.assignedTo?.name} ({task.assignedTo?.email})</p>
-//                 <div className="flex items-center justify-between mt-4">
-//                   <span className={`px-3 py-1 text-sm font-semibold text-white rounded-full ${statusColors[task.status] || "bg-gray-500"}`}>
-//                     {task.status?.replace("_", " ").toUpperCase() || "UNKNOWN"}
-//                   </span>
-//                   <span className="text-sm text-gray-500">🕒 {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "No Due Date"}</span>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-
-//       {showModal && (
-//         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-//           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-//             <h3 className="text-lg font-bold mb-4">Assign a Task</h3>
-//             <form onSubmit={handleSubmit}>
-//               <input type="text" placeholder="Title" className="w-full p-2 border rounded mb-2" value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
-//               <textarea placeholder="Description" className="w-full p-2 border rounded mb-2" value={newTask.description} onChange={(e) => setNewTask({ ...newTask, description: e.target.value })} required></textarea>
-//               <select className="w-full p-2 border rounded mb-2" value={newTask.assignedTo} onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })} required>
-//                 <option value="">Select Employee</option>
-//                 {employees.map((emp) => (
-//                   <option key={emp._id} value={emp._id}>{emp.name} ({emp.email})</option>
-//                 ))}
-//               </select>
-//               <input type="date" className="w-full p-2 border rounded mb-2" value={newTask.dueDate} onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })} required />
-//               <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Assign Task</button>
-//             </form>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Tasks;
-
-
-import { useEffect, useState } from "react";
-import API from "../api/axios";
-import { Toaster, toast } from "react-hot-toast";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const statusColors = {
-  pending: "bg-yellow-500",
-  in_progress: "bg-blue-500",
-  completed: "bg-green-500",
-};
-
-const Tasks = () => {
+const Task = () => {
   const [tasks, setTasks] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [employees, setEmployees] = useState([]);
-  const [newTask, setNewTask] = useState({ title: "", description: "", assignedTo: "", dueDate: "" });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    assignedTo: "",
+    dueDate: "",
+  });
 
   useEffect(() => {
+    console.log("Fetching tasks..."); // Debugging log
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/tasks/gettasks");
+        setTasks(response.data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
     fetchTasks();
-    fetchEmployees();
-  }, []);
+  }, []); // Dependency array ensures this runs only once
 
-  const fetchTasks = async () => {
-    try {
-      const res = await API.get("/tasks/gettasks");
-      setTasks(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      toast.error("Error fetching tasks");
-      setTasks([]);
-    }
+  const handleDelete = (taskId) => {
+    axios.delete(`http://localhost:5000/api/tasks/delete/${taskId}`)
+      .then(() => {
+        setTasks(prev => prev.filter(task => task._id !== taskId));
+        alert({
+          title: "Task Deleted",
+          description: `Task with ID ${taskId} was successfully deleted.`,
+          variant: "default",
+        });
+      })
+      .catch(error => {
+        console.error("Error deleting task:", error);
+        alert({
+          title: "Error",
+          description: "Could not delete task.",
+          variant: "destructive",
+        });
+      });
   };
 
-  const fetchEmployees = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/users/getemployees");
-      setEmployees(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      toast.error("Error fetching employees");
-      setEmployees([]);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await API.post("/tasks/assigntask", newTask);
-      toast.success("Task assigned successfully!");
-      setShowModal(false);
-      setNewTask({ title: "", description: "", assignedTo: "", dueDate: "" });
-      fetchTasks();
-    } catch (err) {
-      toast.error("Failed to assign task");
-    }
-  };
-
-  const handleDelete = async (taskId) => {
-    try {
-      await API.delete(`/tasks/deletetask/${taskId}`);
-      toast.success("Task deleted successfully!");
-      fetchTasks();
-    } catch (err) {
-      toast.error("Failed to delete task");
-    }
+  const handleAddTask = () => {
+    axios.post("http://localhost:5000/api/tasks/assigntask", newTask) // Replace with your API
+      .then(response => {
+        setTasks([...tasks, response.data]);
+        setIsModalOpen(false);
+        setNewTask({ title: "", description: "", assignedTo: "", dueDate: "" });
+      })
+      .catch(error => console.error("Error adding task:", error));
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <Toaster position="top-right" />
-      <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-800">📌 Your Tasks</h2>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg" onClick={() => setShowModal(true)}>
-            + Assign Task
-          </button>
-        </div>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">📌 Task Manager</h1>
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg mb-4">
+        + Assign Task
+      </button>
 
-        {tasks.length === 0 ? (
-          <p className="text-gray-500 text-center">No tasks available</p>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {tasks.map((task) => (
-              <div key={task._id} className="bg-white shadow-lg rounded-lg p-5 border-l-4 border-gray-300">
-                <h3 className="text-xl font-semibold text-gray-700">{task.title}</h3>
-                <p className="text-gray-600 mt-1">{task.description}</p>
-                <p className="text-gray-500 text-sm mt-1">👤 Assigned to: {task.assignedTo?.name} ({task.assignedTo?.email})</p>
-                <div className="flex items-center justify-between mt-4">
-                  <span className={`px-3 py-1 text-sm font-semibold text-white rounded-full ${statusColors[task.status] || "bg-gray-500"}`}>
-                    {task.status?.replace("_", " ").toUpperCase() || "UNKNOWN"}
-                  </span>
-                  <span className="text-sm text-gray-500">🕒 {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "No Due Date"}</span>
-                </div>
-                <button
-                  onClick={() => handleDelete(task._id)}
-                  className="mt-4 bg-red-600 text-white px-3 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
+      {/* Task List */}
+      <div className="grid md:grid-cols-3 sm:grid-cols-3 gap-6">
+        {tasks.map((task) => (
+          <div key={task._id} className="bg-white shadow-lg rounded-lg p-5 flex flex-col justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-700">{task.title}</h2>
+              <p className="text-gray-600 mt-1">{task.description}</p>
+              <p className="text-sm text-gray-500 mt-2">👤 Assigned to: {task.assignedTo.name} ({task.assignedTo.email})</p>
+            </div>
+            <div className="mt-4 flex justify-between items-center">
+              <span className="px-3 py-1 text-sm font-medium text-white bg-yellow-500 rounded-full uppercase">
+                {task.status}
+              </span>
+              <span className="text-gray-500 text-sm">📅 {new Date(task.dueDate).toLocaleDateString()}</span>
+            </div>
+            <button 
+              onClick={() => handleDelete(task._id)} 
+              className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+              Delete
+            </button>
           </div>
-        )}
+        ))}
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-lg font-bold mb-4">Assign a Task</h3>
-            <form onSubmit={handleSubmit}>
-              <input type="text" placeholder="Title" className="w-full p-2 border rounded mb-2" value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
-              <textarea placeholder="Description" className="w-full p-2 border rounded mb-2" value={newTask.description} onChange={(e) => setNewTask({ ...newTask, description: e.target.value })} required></textarea>
-              <select className="w-full p-2 border rounded mb-2" value={newTask.assignedTo} onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })} required>
-                <option value="">Select Employee</option>
-                {employees.map((emp) => (
-                  <option key={emp._id} value={emp._id}>{emp.name} ({emp.email})</option>
-                ))}
-              </select>
-              <input type="date" className="w-full p-2 border rounded mb-2" value={newTask.dueDate} onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })} required />
-              <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Assign Task</button>
-            </form>
+            <h2 className="text-xl font-bold mb-4">Assign New Task</h2>
+            <input 
+              type="text" 
+              placeholder="Title" 
+              className="w-full border p-2 mb-3 rounded" 
+              value={newTask.title} 
+              onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+            />
+            <textarea 
+              placeholder="Description" 
+              className="w-full border p-2 mb-3 rounded" 
+              value={newTask.description} 
+              onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+            />
+            <input 
+              type="text" 
+              placeholder="Assigned To (email)" 
+              className="w-full border p-2 mb-3 rounded" 
+              value={newTask.assignedTo} 
+              onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
+            />
+            <input 
+              type="date" 
+              className="w-full border p-2 mb-3 rounded" 
+              value={newTask.dueDate} 
+              onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+            />
+            <div className="flex justify-end">
+              <button 
+                onClick={() => setIsModalOpen(false)} 
+                className="bg-gray-400 text-white px-4 py-2 rounded-lg mr-2">
+                Cancel
+              </button>
+              <button 
+                onClick={handleAddTask} 
+                className="bg-green-500 text-white px-4 py-2 rounded-lg">
+                Add Task
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -240,4 +138,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default Task;

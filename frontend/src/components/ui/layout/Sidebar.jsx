@@ -37,11 +37,11 @@ const Sidebar = () => {
               <FileText size={20} /> Invoices & Payments
             </NavLink>
           </li> */}
-          <li>
+          {/* <li>
             <NavLink to="/team" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               Team Management
             </NavLink>
-          </li>
+          </li> */}
           <li>
             <NavLink to="/support" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <Ticket size={20} /> Support & Tickets

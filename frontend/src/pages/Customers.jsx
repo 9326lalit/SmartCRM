@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/table";
 import { Badge } from "../components/ui/badge";
@@ -11,6 +11,7 @@ import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
+  const fetchCalled = useRef(false); // Track if fetch has been called
   const [newCustomer, setNewCustomer] = useState({
     name: "",
     email: "",
@@ -25,15 +26,18 @@ const Customers = () => {
 
   // Fetch customers from API
   useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/customers");
-        setCustomers(response.data);
-      } catch (error) {
-        console.error("Error fetching customers:", error);
-      }
-    };
-    fetchCustomers();
+    if (!fetchCalled.current) {
+      fetchCalled.current = true; // Mark fetch as called
+      const fetchCustomers = async () => {
+        try {
+          const response = await axios.get("http://localhost:5000/api/customers");
+          setCustomers(response.data);
+        } catch (error) {
+          console.error("Error fetching customers:", error);
+        }
+      };
+      fetchCustomers();
+    }
   }, []);
 
   // Handle form input change
@@ -131,7 +135,7 @@ const Customers = () => {
         <CardContent className="overflow-x-auto">
           <Table className="border-collapse w-full">
             <TableHeader>
-              <TableRow className="bg-blue-600 text-white">
+              <TableRow className="bg-white-600 text-white">
                 <TableHead className="p-3">Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>

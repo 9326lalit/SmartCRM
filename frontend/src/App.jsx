@@ -1,5 +1,3 @@
-
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Sidebar from "./components/ui/layout/Sidebar";
@@ -17,7 +15,8 @@ import Settings from "./pages/Setting";
 import BillingPage from "./pages/BillingPage";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
-
+import { Toaster } from "react-hot-toast";
+import FormPage from "./pages/FormPage";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,16 +38,24 @@ const App = () => {
 
   return (
     <Router>
-      
-        <div className="flex">
+      <div className="flex h-screen overflow-hidden">
+        {/* Fixed Sidebar */}
+        <div className="w-64 h-full fixed">
           <Sidebar />
-          <div className="flex-1">
-            <Navbar onLogout={handleLogout} />
+        </div>
+
+        <Toaster />
+        {/* Right Side (Navbar + Pages) */}
+        <div className="flex-1 ml-64 flex flex-col h-screen">
+          {/* Navbar */}
+          <Navbar onLogout={handleLogout} />
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-6">
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/login" element={<LoginPage/>} />
-          <Route path="/register" element={<RegisterPage  />} />
-          <Route path="*" element={<Navigate to="/login" />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/leads" element={<Leads />} />
               <Route path="/profile" element={<Profile />} />
@@ -59,11 +66,16 @@ const App = () => {
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/team" element={<Team />} />
+              <Route path="/form" element={<FormPage />} />
+
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>
         </div>
-      
+      </div>
+    
+    
+    
     </Router>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import CRMLineChart from "../components/charts/LineChart";
@@ -17,9 +17,13 @@ const Dashboard = () => {
   const [recentActivity, setRecentActivity] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", type: "Lead" });
+  const hasFetchedData = useRef(false); // Track if data has been fetched
 
   // Fetch dashboard data
   useEffect(() => {
+    if (hasFetchedData.current) return; // Prevent duplicate API calls
+    hasFetchedData.current = true;
+
     const fetchDashboardData = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/stats/stats");
