@@ -37,13 +37,7 @@ export default function RegisterPage() {
       <div className="flex w-full max-w-4xl bg-white shadow-lg rounded-2xl overflow-hidden">
         {/* Left Side - Image */}
         <div className="w-1/2 hidden md:flex">
-          {/* <Image
-            src="/auth-image.jpg"
-            alt="Auth"
-            width={600}
-            height={600}
-            className="object-cover"
-          /> */}
+        
         </div>
         
         {/* Right Side - Form */}

@@ -15,7 +15,7 @@ const Task = () => {
     console.log("Fetching tasks..."); // Debugging log
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/tasks/gettasks");
+        const response = await axios.get("https://smartcrmbackend.onrender.com/api/tasks/gettasks");
         setTasks(response.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -26,7 +26,7 @@ const Task = () => {
   }, []); // Dependency array ensures this runs only once
 
   const handleDelete = (taskId) => {
-    axios.delete(`http://localhost:5000/api/tasks/delete/${taskId}`)
+    axios.delete(`https://smartcrmbackend.onrender.com/api/tasks/delete/${taskId}`)
       .then(() => {
         setTasks(prev => prev.filter(task => task._id !== taskId));
         alert({
@@ -46,7 +46,7 @@ const Task = () => {
   };
 
   const handleAddTask = () => {
-    axios.post("http://localhost:5000/api/tasks/assigntask", newTask) // Replace with your API
+    axios.post("https://smartcrmbackend.onrender.com/api/tasks/assigntask", newTask) // Replace with your API
       .then(response => {
         setTasks([...tasks, response.data]);
         setIsModalOpen(false);

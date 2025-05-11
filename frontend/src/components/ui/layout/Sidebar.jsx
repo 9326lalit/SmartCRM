@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const Sidebar = () => {
   return (
     <aside className="w-64 bg-gray-900 text-white h-screen p-6 flex flex-col">
-      <h1 className="text-2xl font-bold mb-6">DKS-TEXTILE</h1>
+      <h1 className="text-2xl font-bold mb-6">Smart-CRM</h1>
       <nav className="flex-1">
         <ul className="space-y-2">
           <li>
@@ -22,11 +22,11 @@ const Sidebar = () => {
               <Users size={20} /> Customers
             </NavLink>
           </li>
-          <li>
+          {/* <li>
             <NavLink to="/leads" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <Briefcase size={20} /> Leads
             </NavLink>
-          </li>
+          </li> */}
           <li>
             <NavLink to="/tasks" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <CheckSquare size={20} /> Tasks & Reminders
@@ -36,12 +36,12 @@ const Sidebar = () => {
             <NavLink to="/invoices" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <FileText size={20} /> Invoices & Payments
             </NavLink>
-          </li> */}
+          </li>  */}
           {/* <li>
             <NavLink to="/team" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               Team Management
             </NavLink>
-          </li> */}
+          </li>  */}
           <li>
             <NavLink to="/support" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <Ticket size={20} /> Support & Tickets
@@ -51,8 +51,8 @@ const Sidebar = () => {
             <NavLink to="/analytics" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <BarChart3 size={20} /> Analytics & Reports
             </NavLink>
-          </li> */}
-          {/* <li>
+          </li> 
+          <li>
             <NavLink to="/settings" className={({ isActive }) => `flex items-center gap-3 p-3 rounded-md transition ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`}>
               <Settings size={20} /> Setting
             </NavLink>
@@ -64,7 +64,7 @@ const Sidebar = () => {
 
       {/* Styled Name Section */}
       <div className="text-center mt-auto">
-        <p className="text-lg font-semibold opacity-80">Lalit Khairnar</p>
+        <p className="text-lg font-semibold opacity-80">#Developers</p>
       </div>
     </aside>
   );

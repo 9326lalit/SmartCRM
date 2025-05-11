@@ -26,7 +26,7 @@ const Dashboard = () => {
 
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/stats/stats");
+        const response = await axios.get("https://smartcrmbackend.onrender.com/api/stats/stats");
         setDashboardData(response.data);
       } catch (error) {
         console.error("Error fetching dashboard data", error);

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { PlusCircle, Trash2, Edit3, Save, Filter, Moon, Sun } from "lucide-react";
 
-const API_URL = "http://localhost:5000/api/team"; // Update this with your backend URL
+const API_URL = "https://smartcrmbackend.onrender.com/api/team"; // Update this with your backend URL
 
 const Team = () => {
   const [team, setTeam] = useState([]);

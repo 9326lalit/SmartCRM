@@ -30,7 +30,7 @@ const Customers = () => {
       fetchCalled.current = true; // Mark fetch as called
       const fetchCustomers = async () => {
         try {
-          const response = await axios.get("http://localhost:5000/api/customers");
+          const response = await axios.get("https://smartcrmbackend.onrender.com/api/customers");
           setCustomers(response.data);
         } catch (error) {
           console.error("Error fetching customers:", error);
@@ -49,7 +49,7 @@ const Customers = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/customers", newCustomer);
+      const response = await axios.post("https://smartcrmbackend.onrender.com/api/customers", newCustomer);
       setCustomers([...customers, response.data]); // Update UI with new customer
       setOpen(false);
       setNewCustomer({
