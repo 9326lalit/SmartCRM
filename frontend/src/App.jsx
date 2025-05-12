@@ -1,6 +1,4 @@
-
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/ui/layout/Sidebar";
 import Navbar from "./components/ui/layout/Navbar";
 import Dashboard from "./pages/Dashboard";
@@ -18,45 +16,25 @@ import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import { Toaster } from "react-hot-toast";
 import FormPage from "./pages/FormPage";
+import PrivateRoute from "./PrivateRoute.jsx";
+import { useAuth, AuthProvider } from "./context/AuthContext";
+import { useState } from "react";
 
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const AppContent = () => {
+  const { logout } = useAuth();
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) setIsAuthenticated(true);
-  }, []);
-
-  const handleLogin = () => {
-    localStorage.setItem("user", "loggedIn");
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsAuthenticated(false);
-  };
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Fixed Sidebar */}
       <div className="w-64 h-full fixed">
         <Sidebar />
       </div>
-
       <Toaster />
-
-      {/* Right Side (Navbar + Pages) */}
       <div className="flex-1 ml-64 flex flex-col h-screen">
-        {/* Navbar */}
-        <Navbar onLogout={handleLogout} />
-
-        {/* Scrollable Content */}
+        <Navbar onLogout={logout} />
         <div className="flex-1 overflow-y-auto p-6">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/leads" element={<Leads />} />
             <Route path="/profile" element={<Profile />} />
@@ -68,11 +46,22 @@ const App = () => {
             <Route path="/invoices" element={<Invoices />} />
             <Route path="/team" element={<Team />} />
             <Route path="/form" element={<FormPage />} />
-            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </div>
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/*" element={<PrivateRoute><AppContent /></PrivateRoute>} />
+      </Routes>
+    </AuthProvider>
   );
 };
 
