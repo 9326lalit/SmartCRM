@@ -1,14 +1,12 @@
-
-
-
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { PlusCircle, Mail, User, Clock, Trash2 } from "lucide-react";
+import { PlusCircle, Edit, Trash2, X, Search } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 const employees = [
-  { name: "John Doe", email: "john@example.com" },
-  { name: "Jane Smith", email: "jane@example.com" },
-  { name: "Michael Brown", email: "michael@example.com" },
+  { name: "Lalit", email: "lalit@gmail.com" },
+  { name: "Nilesh", email: "nilesh@gmail.com" },
+  { name: "Divyani", email: "divyani@gmail.com" },
 ];
 
 const SupportTickets = () => {
@@ -16,125 +14,102 @@ const SupportTickets = () => {
     const storedTickets = localStorage.getItem("tickets");
     return storedTickets ? JSON.parse(storedTickets) : [];
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentTicket, setCurrentTicket] = useState({ title: "", description: "", assignedTo: employees[0].name, status: "Open", priority: "Medium" });
 
   useEffect(() => {
     localStorage.setItem("tickets", JSON.stringify(tickets));
   }, [tickets]);
 
-  const addTicket = () => {
-    const newTicket = {
-      id: tickets.length + 1,
-      title: "New Support Request",
-      assignedTo: "",
-      email: "",
-      status: "Open",
-    };
-    setTickets([...tickets, newTicket]);
+  const handleInputChange = (e) => {
+    setCurrentTicket({ ...currentTicket, [e.target.name]: e.target.value });
   };
 
-  const updateAssignedTo = (id, name) => {
-    const email = employees.find(emp => emp.name === name)?.email || "";
-    setTickets(tickets.map(ticket => 
-      ticket.id === id ? { ...ticket, assignedTo: name, email } : ticket
-    ));
-    
-    if (email) {
-      sendEmailNotification(email, name);
+  const handleSubmit = () => {
+    if (editMode) {
+      setTickets(tickets.map(ticket => ticket.id === currentTicket.id ? currentTicket : ticket));
+    } else {
+      const newTicket = { ...currentTicket, id: Date.now() };
+      setTickets([...tickets, newTicket]);
     }
+    closeModal();
   };
 
-  const updateStatus = (id, status) => {
-    setTickets(tickets.map(ticket => 
-      ticket.id === id ? { ...ticket, status } : ticket
-    ));
+  const openModal = (ticket = { title: "", description: "", assignedTo: employees[0].name, status: "Open", priority: "Medium" }) => {
+    setCurrentTicket(ticket);
+    setEditMode(!!ticket.id);
+    setIsModalOpen(true);
   };
 
-  const sendEmailNotification = async (email, name) => {
-    try {
-      await axios.post("https://smartcrmbackend.onrender.com/send-email", { email, name });
-      alert(`Email sent to ${name} (${email})`);
-    } catch (error) {
-      console.error("Email sending failed", error);
-    }
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditMode(false);
   };
 
   const deleteTicket = (id) => {
     setTickets(tickets.filter(ticket => ticket.id !== id));
   };
 
-  return (
-    <div className="p-6 bg-gray-50 min-h-screen flex flex-col items-center">
-      <div className="w-full max-w-3xl">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-semibold text-gray-800">🎟 Support Tickets</h2>
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-700 transition"
-            onClick={addTicket}
-          >
-            <PlusCircle size={20} /> Create Ticket
-          </button>
-        </div>
+  const filteredTickets = tickets.filter(ticket => 
+    (filterStatus === "" || ticket.status === filterStatus) &&
+    (searchQuery === "" || ticket.title.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          {tickets.length === 0 ? (
-            <p className="text-center text-gray-500">No tickets created yet.</p>
-          ) : (
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-200 text-gray-700 text-sm">
-                  <th className="p-3 text-left">Ticket</th>
-                  <th className="p-3 text-left">Assigned To</th>
-                  <th className="p-3 text-left">Status</th>
-                  <th className="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tickets.map((ticket) => (
-                  <tr key={ticket.id} className="border-t hover:bg-gray-100 transition">
-                    <td className="p-3 flex items-center gap-2">
-                      <Mail size={18} className="text-blue-500" /> {ticket.title}
-                    </td>
-                    <td className="p-3">
-                      <select
-                        className="border p-2 rounded-md w-full focus:ring focus:ring-blue-200"
-                        value={ticket.assignedTo}
-                        onChange={(e) => updateAssignedTo(ticket.id, e.target.value)}
-                      >
-                        <option value="">Select Employee</option>
-                        {employees.map(emp => (
-                          <option key={emp.email} value={emp.name}>{emp.name}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="p-3">
-                      <select
-                        className="border p-2 rounded-md w-full focus:ring focus:ring-green-200"
-                        value={ticket.status}
-                        onChange={(e) => updateStatus(ticket.id, e.target.value)}
-                      >
-                        <option value="Open">Open</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Resolved">Resolved</option>
-                      </select>
-                    </td>
-                    <td className="p-3">
-                      <button
-                        className="text-red-500 hover:text-red-600"
-                        onClick={() => deleteTicket(ticket.id)}
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+  return (
+    <div className="p-8 bg-gray-100 min-h-screen">
+      <h2 className="text-3xl font-bold mb-6">Support & Tickets</h2>
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <Search size={20} />
+          <input type="text" placeholder="Search tickets..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="p-2 border rounded" />
         </div>
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="p-2 border rounded">
+          <option value="">All</option>
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+        </select>
+        <Button onClick={() => openModal()}><PlusCircle size={20} /> Create Ticket</Button>
       </div>
+      {filteredTickets.length === 0 ? (
+        <p className="text-gray-500">No tickets found.</p>
+      ) : (
+        <div className="grid gap-4">
+          {filteredTickets.map(ticket => (
+            <div key={ticket.id} className="p-4 bg-white shadow-md rounded-md">
+              <h3 className="text-lg font-semibold">{ticket.title}</h3>
+              <p>{ticket.description}</p>
+              <p className="text-sm text-gray-600">Assigned to: {ticket.assignedTo} | Status: {ticket.status} | Priority: {ticket.priority}</p>
+              <div className="flex gap-2 mt-2">
+                <Button onClick={() => openModal(ticket)} className="bg-blue-500 text-white">Edit</Button>
+                <Button onClick={() => deleteTicket(ticket.id)} className="bg-red-500 text-white">Delete</Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-md w-80">
+            <h3>{editMode ? "Edit Ticket" : "Create Ticket"}</h3>
+            <input name="title" value={currentTicket.title} onChange={handleInputChange} placeholder="Title" className="w-full p-2 mb-2 border rounded" />
+            <textarea name="description" value={currentTicket.description} onChange={handleInputChange} placeholder="Description" className="w-full p-2 mb-2 border rounded"></textarea>
+            <select name="assignedTo" value={currentTicket.assignedTo} onChange={handleInputChange} className="w-full p-2 mb-2 border rounded">
+              {employees.map((emp, index) => (
+                <option key={index} value={emp.name}>{emp.name}</option>
+              ))}
+            </select>
+            <Button onClick={handleSubmit} className="w-full bg-green-500 text-white">{editMode ? "Update" : "Create"}</Button>
+            <Button onClick={closeModal} className="w-full mt-2 bg-gray-300">Cancel</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default SupportTickets;
-
